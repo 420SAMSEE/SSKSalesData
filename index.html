@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบบันทึกการขาย SSKratomSystem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+    :root {
+        --primary-color: #6c5ce7;
+        --secondary-color: #a29bfe;
+        --dark-color: #2d3436;
+        --light-color: #f5f6fa;
+        --accent-color: #fd79a8;
+        --success-color: #00b894;
+        --danger-color: #d63031;
+        --warning-color: #fdcb6e;
+        --info-color: #0984e3;
+        --panel-bg: rgba(45, 52, 54, 0.95);
+        --card-bg: rgba(99, 110, 114, 0.3);
+        --modal-bg: rgba(0, 0, 0, 0.85);
+        --text-primary: #f5f6fa;
+        --text-secondary: #dfe6e9;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Kanit', sans-serif;
+        background: linear-gradient(135deg, var(--dark-color), #1e272e);
+        color: var(--text-primary);
+        line-height: 1.6;
+        padding: 20px;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: var(--panel-bg);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        width: 100%;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1, h2, h3 {
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        position: relative;
+        padding-bottom: 15px;
+        font-size: 2.2rem;
+        background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    h1::after {
+        content: '';
+        display: block;
+        width: 150px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        margin: 15px auto 0;
+        border-radius: 3px;
+    }
+
+    .card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--text-secondary);
+        font-weight: 400;
+        font-size: 0.95rem;
+    }
+
+    label i {
+        margin-right: 8px;
+        color: var(--secondary-color);
+        width: 20px;
+        text-align: center;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 14px 18px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        color: var(--text-primary);
+        font-size: 16px;
+        transition: all 0.3s ease;
+        font-family: 'Kanit', sans-serif;
+    }
+
+    input:focus, select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.3);
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .readonly {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--accent-color);
+        font-weight: 500;
+        cursor: not-allowed;
+    }
+
+    .summary-section {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 25px;
+        border-left: 4px solid var(--primary-color);
+        transition: all 0.3s ease;
+    }
+
+    .summary-section:hover {
+        transform: translateX(5px);
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+
+    .summary-total {
+        font-size: 1.1rem;
+        margin-top: 18px;
+        padding-top: 18px;
+        border-top: 2px solid var(--primary-color);
+        font-weight: 500;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 28px;
+        font-size: 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        border: none;
+        font-weight: 500;
+        font-family: 'Kanit', sans-serif;
+        gap: 8px;
+    }
+
+    .btn i {
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-primary);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, var(--success-color), #00a884);
+        color: white;
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, var(--danger-color), #c23616);
+        color: white;
+    }
+
+    .btn-warning {
+        background: linear-gradient(135deg, var(--warning-color), #e1b12c);
+        color: #2f3640;
+    }
+
+    .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        opacity: 0.9;
+    }
+
+    .btn:active {
+        transform: translateY(1px);
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 15px;
+        margin-top: 25px;
+        flex-wrap: wrap;
+    }
+
+    .btn-group .btn {
+        flex: 1;
+        min-width: 160px;
+    }
+
+    .price-note {
+        font-size: 0.85rem;
+        color: rgba(223, 230, 233, 0.6);
+        margin-top: 8px;
+        font-style: italic;
+    }
+
+    #statusMessage {
+        margin-top: 25px;
+        padding: 18px;
+        border-radius: 10px;
+        text-align: center;
+        display: none;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .success {
+        background-color: rgba(0, 184, 148, 0.15);
+        color: var(--success-color);
+        border: 1px solid var(--success-color);
+    }
+
+    .error {
+        background-color: rgba(214, 48, 49, 0.15);
+        color: var(--danger-color);
+        border: 1px solid var(--danger-color);
+    }
+
+    .info {
+        background-color: rgba(9, 132, 227, 0.15);
+        color: var(--info-color);
+        border: 1px solid var(--info-color);
+    }
+
+    .warning {
+        background-color: rgba(253, 203, 110, 0.15);
+        color: #e1b12c;
+        border: 1px solid var(--warning-color);
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--modal-bg);
+        z-index: 1000;
+        overflow-y: auto;
+        padding: 20px;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-content {
+        background: var(--panel-bg);
+        margin: auto;
+        padding: 35px;
+        border-radius: 15px;
+        max-width: 800px;
+        width: 90%;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        animation: modalSlideIn 0.4s ease-out;
+    }
+
+    @keyframes modalSlideIn {
+        from { opacity: 0; transform: translateY(-30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 28px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .close:hover {
+        color: var(--accent-color);
+        transform: rotate(90deg);
+    }
+
+    /* History Table */
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 25px;
+        font-size: 0.95rem;
+    }
+
+    .history-table th, .history-table td {
+        padding: 14px 18px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .history-table th {
+        background: rgba(108, 92, 231, 0.15);
+        color: var(--primary-color);
+        font-weight: 500;
+        position: sticky;
+        top: 0;
+    }
+
+    .history-table tr {
+        transition: all 0.2s ease;
+    }
+
+    .history-table tr:hover {
+        background: rgba(255, 255, 255, 0.05);
+        transform: translateX(5px);
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        gap: 5px;
+    }
+
+    .badge i {
+        font-size: 0.7rem;
+    }
+
+    .badge-success {
+        background: rgba(0, 184, 148, 0.15);
+        color: var(--success-color);
+    }
+
+    .badge-danger {
+        background: rgba(214, 48, 49, 0.15);
+        color: var(--danger-color);
+    }
+
+    .badge-warning {
+        background: rgba(253, 203, 110, 0.15);
+        color: #e1b12c;
+    }
+
+    /* Tabs */
+    .tabs {
+        display: flex;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        gap: 5px;
+    }
+
+    .tab {
+        padding: 12px 25px;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        font-weight: 500;
+        color: var(--text-secondary);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .tab::after {
+        content: '';
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--primary-color);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .tab:hover {
+        color: var(--text-primary);
+    }
+
+    .tab.active {
+        color: var(--text-primary);
+    }
+
+    .tab.active::after {
+        transform: translateX(0);
+    }
+
+    .tab-content {
+        display: none;
+        animation: fadeIn 0.5s ease;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    /* Pagination */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 25px;
+        gap: 10px;
+    }
+
+    .page-item {
+        list-style: none;
+    }
+
+    .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .page-link:hover {
+        background: rgba(108, 92, 231, 0.3);
+    }
+
+    .page-link.active {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        border-top: 4px solid var(--primary-color);
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .container {
+            padding: 25px;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        .btn-group {
+            flex-direction: column;
+        }
+        
+        .btn-group .btn {
+            width: 100%;
+        }
+        
+        .modal-content {
+            padding: 25px;
+        }
+        
+        body {
+            padding: 15px;
+            align-items: flex-start;
+        }
+        
+        .container {
+            padding: 20px;
+        }
+        
+        .history-table {
+            font-size: 0.85rem;
+        }
+        
+        .history-table th, .history-table td {
+            padding: 10px 12px;
+        }
+        
+        .tab {
+            padding: 10px 15px;
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .container {
+            padding: 15px;
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            padding-bottom: 10px;
+        }
+        
+        h1::after {
+            width: 100px;
+            height: 3px;
+        }
+        
+        .card {
+            padding: 18px;
+        }
+        
+        input, select {
+            padding: 12px 15px;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            font-size: 0.9rem;
+        }
+        
+        .modal-content {
+            padding: 20px;
+        }
+        
+        .history-table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <i class="fas fa-seedling"></i> ระบบบันทึกการขาย SSKratomSystem
+        </h1>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="entry">บันทึกข้อมูล</div>
+            <div class="tab" data-tab="history">ประวัติการบันทึก</div>
+        </div>
+        
+        <div class="tab-content active" id="entry-tab">
+            <div class="card">
+                <form id="salesForm">
+                    <div class="form-grid">
+                        <div class="form-section">
+                            <div class="form-group">
+                                <label for="date"><i class="far fa-calendar-alt"></i> วันที่</label>
+                                <input type="date" id="date" name="date" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="quantity"><i class="fas fa-bottle-water"></i> จำนวนขวดที่ขายได้</label>
+                                <input type="number" id="quantity" name="quantity" required min="0" step="1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="rawWaterDebt"><i class="fas fa-exclamation-circle"></i> ค้างน้ำดิบ (ขวด)</label>
+                                <input type="number" id="rawWaterDebt" name="rawWaterDebt" value="0" min="0" step="1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="debtCleared"><i class="fas fa-check-circle"></i> เคลียยอดค้างน้ำดิบ (ขวด)</label>
+                                <input type="number" id="debtCleared" name="debtCleared" value="0" min="0" step="1">
+                                <div class="price-note">จำนวนขวดที่ชำระยอดค้าง (คิดเป็นรายรับเพิ่มเติม)</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="totalIncome"><i class="fas fa-coins"></i> รวมรายรับ (บาท)</label>
+                                <input type="text" id="totalIncome" name="totalIncome" readonly class="readonly">
+                                <div class="price-note">คำนวณจาก (จำนวนขวดที่ขายได้ + เคลียยอดค้าง) × 40 บาท</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <div class="form-group">
+                                <label for="pipeCost"><i class="fas fa-leaf"></i> ค่าท่อม (บาท)</label>
+                                <input type="number" id="pipeCost" name="pipeCost" value="0" min="0">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="shareCost"><i class="fas fa-handshake"></i> ค่าแชร์ (บาท)</label>
+                                <input type="number" id="shareCost" name="shareCost" value="100" min="0">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="savings"><i class="fas fa-piggy-bank"></i> เก็บออม (บาท)</label>
+                                <input type="number" id="savings" name="savings" value="500" min="0">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="otherExpenses"><i class="fas fa-receipt"></i> ค่าใช้จ่ายอื่น (บาท)</label>
+                                <input type="number" id="otherExpenses" name="otherExpenses" value="0" min="0">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="totalExpenses"><i class="fas fa-money-bill-wave"></i> รวมรายจ่าย (บาท)</label>
+                                <input type="text" id="totalExpenses" name="totalExpenses" readonly class="readonly">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="remaining"><i class="fas fa-wallet"></i> คงเหลือ (บาท)</label>
+                        <input type="text" id="remaining" name="remaining" readonly class="readonly">
+                    </div>
+                    
+                    <div class="summary-section">
+                        <div class="summary-item">
+                            <span>รวมรายรับ:</span>
+                            <span id="summaryIncome">0 ฿</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>รวมรายจ่าย:</span>
+                            <span id="summaryExpenses">600 ฿</span>
+                        </div>
+                        <div class="summary-item summary-total">
+                            <span>คงเหลือ:</span>
+                            <span id="summaryRemaining">0 ฿</span>
+                        </div>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button type="button" id="previewBtn" class="btn btn-secondary">
+                            <i class="fas fa-clipboard-check"></i> ตรวจสอบข้อมูลก่อนบันทึก
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="statusMessage"></div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="history-tab">
+            <div class="card">
+                <h2><i class="fas fa-history"></i> ประวัติการบันทึกข้อมูล</h2>
+                <div class="btn-group">
+                    <button type="button" id="refreshHistory" class="btn btn-primary">
+                        <i class="fas fa-sync-alt"></i> รีเฟรชข้อมูล
+                    </button>
+                    <button type="button" id="exportData" class="btn btn-warning">
+                        <i class="fas fa-file-export"></i> ส่งออกข้อมูล
+                    </button>
+                </div>
+                <div id="historyContent">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>วันที่</th>
+                                <th>จำนวนขวด</th>
+                                <th>รายรับ</th>
+                                <th>รายจ่าย</th>
+                                <th>คงเหลือ</th>
+                                <th>สถานะ</th>
+                                <th>การกระทำ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center;">
+                                    <div class="spinner"></div>
+                                    กำลังโหลดข้อมูล...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="pagination" id="pagination"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-search"></i> ตรวจสอบข้อมูลก่อนบันทึก</h2>
+            <div id="modalPreviewContent" class="card" style="margin-top: 20px;"></div>
+            <div class="btn-group" style="margin-top: 20px;">
+                <button type="button" id="confirmSaveBtn" class="btn btn-success">
+                    <i class="fas fa-check"></i> ยืนยันการบันทึก
+                </button>
+                <button type="button" id="cancelSaveBtn" class="btn btn-danger">
+                    <i class="fas fa-times"></i> ยกเลิก
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-info-circle"></i> รายละเอียดการบันทึก</h2>
+            <div id="detailModalContent" class="card" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <script>
+    // Configuration
+    const CONFIG = {
+        GOOGLE_APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzX3oxXgrDhSU3cRhsk8UJ7-uI-MZ2azRjYiUfBLHKURCFf1cdPeMvsnze-2d4CftQ/exec',
+        PRICE_PER_BOTTLE: 40,
+        DEFAULT_SHARE_COST: 100,
+        DEFAULT_SAVINGS: 500,
+        RECORDS_PER_PAGE: 10
+    };
+
+    // Main Application Class
+    class SSKratomSystem {
+        constructor() {
+            this.currentPage = 1;
+            this.allHistoryData = [];
+            
+            this.initElements();
+            this.setupEventListeners();
+            this.initializeForm();
+            
+            if (document.querySelector('.tab.active').dataset.tab === 'history') {
+                this.loadHistory();
+            }
+        }
+
+        initElements() {
+            // Form elements
+            this.salesForm = document.getElementById('salesForm');
+            this.dateInput = document.getElementById('date');
+            this.quantityInput = document.getElementById('quantity');
+            this.rawWaterDebtInput = document.getElementById('rawWaterDebt');
+            this.debtClearedInput = document.getElementById('debtCleared');
+            this.totalIncomeInput = document.getElementById('totalIncome');
+            this.pipeCostInput = document.getElementById('pipeCost');
+            this.shareCostInput = document.getElementById('shareCost');
+            this.savingsInput = document.getElementById('savings');
+            this.otherExpensesInput = document.getElementById('otherExpenses');
+            this.totalExpensesInput = document.getElementById('totalExpenses');
+            this.remainingInput = document.getElementById('remaining');
+            
+            // Summary elements
+            this.summaryIncome = document.getElementById('summaryIncome');
+            this.summaryExpenses = document.getElementById('summaryExpenses');
+            this.summaryRemaining = document.getElementById('summaryRemaining');
+            
+            // History elements
+            this.historyTableBody = document.getElementById('historyTableBody');
+            this.pagination = document.getElementById('pagination');
+            
+            // Modal elements
+            this.previewModal = document.getElementById('previewModal');
+            this.detailModal = document.getElementById('detailModal');
+            this.modalPreviewContent = document.getElementById('modalPreviewContent');
+            this.detailModalContent = document.getElementById('detailModalContent');
+            
+            // Status message
+            this.statusMessage = document.getElementById('statusMessage');
+        }
+
+        setupEventListeners() {
+            // Auto-calculating inputs
+            const inputs = [
+                'quantity', 'rawWaterDebt', 'debtCleared', 
+                'pipeCost', 'shareCost', 'savings', 'otherExpenses'
+            ];
+            
+            inputs.forEach(id => {
+                document.getElementById(id).addEventListener('input', () => this.calculateRemaining());
+            });
+
+            // Tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => this.switchTab(tab));
+            });
+
+            // Buttons
+            document.getElementById('previewBtn').addEventListener('click', () => this.showPreview());
+            document.getElementById('confirmSaveBtn').addEventListener('click', () => this.confirmSave());
+            document.getElementById('cancelSaveBtn').addEventListener('click', () => this.closeModal(this.previewModal));
+            document.getElementById('refreshHistory').addEventListener('click', () => this.loadHistory());
+            document.getElementById('exportData').addEventListener('click', () => this.exportData());
+
+            // Close modals
+            document.querySelectorAll('.close').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.modal').forEach(modal => {
+                        this.closeModal(modal);
+                    });
+                });
+            });
+
+            // Click outside modal to close
+            window.addEventListener('click', (event) => {
+                if (event.target.classList.contains('modal')) {
+                    this.closeModal(event.target);
+                }
+            });
+        }
+
+        initializeForm() {
+            // Set default date to today
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            this.dateInput.value = formattedDate;
+            
+            // Set default values
+            this.shareCostInput.value = CONFIG.DEFAULT_SHARE_COST;
+            this.savingsInput.value = CONFIG.DEFAULT_SAVINGS;
+            
+            // Initial calculation
+            this.calculateRemaining();
+        }
+
+        // ======================
+        // Calculation Functions
+        // ======================
+        calculateIncome() {
+            const quantity = parseFloat(this.quantityInput.value) || 0;
+            const debtCleared = parseFloat(this.debtClearedInput.value) || 0;
+            const totalIncome = (quantity + debtCleared) * CONFIG.PRICE_PER_BOTTLE;
+            
+            this.totalIncomeInput.value = this.formatNumber(totalIncome);
+            this.summaryIncome.textContent = this.formatNumber(totalIncome) + ' ฿';
+            return totalIncome;
+        }
+
+        calculateExpenses() {
+            const pipeCost = parseFloat(this.pipeCostInput.value) || 0;
+            const shareCost = parseFloat(this.shareCostInput.value) || 0;
+            const savings = parseFloat(this.savingsInput.value) || 0;
+            const otherExpenses = parseFloat(this.otherExpensesInput.value) || 0;
+            const totalExpenses = pipeCost + shareCost + savings + otherExpenses;
+            
+            this.totalExpensesInput.value = this.formatNumber(totalExpenses);
+            this.summaryExpenses.textContent = this.formatNumber(totalExpenses) + ' ฿';
+            return totalExpenses;
+        }
+
+        calculateRemaining() {
+            const totalIncome = this.calculateIncome();
+            const totalExpenses = this.calculateExpenses();
+            const remaining = totalIncome - totalExpenses;
+            
+            this.remainingInput.value = this.formatNumber(remaining);
+            this.summaryRemaining.textContent = this.formatNumber(remaining) + ' ฿';
+            return remaining;
+        }
+
+        // ======================
+        // Form Handling Functions
+        // ======================
+        getFormData() {
+            return {
+                date: this.dateInput.value,
+                quantity: parseFloat(this.quantityInput.value) || 0,
+                rawWaterDebt: parseFloat(this.rawWaterDebtInput.value) || 0,
+                debtCleared: parseFloat(this.debtClearedInput.value) || 0,
+                pipeCost: parseFloat(this.pipeCostInput.value) || 0,
+                shareCost: parseFloat(this.shareCostInput.value) || 0,
+                savings: parseFloat(this.savingsInput.value) || 0,
+                otherExpenses: parseFloat(this.otherExpensesInput.value) || 0,
+                totalIncome: (parseFloat(this.quantityInput.value || 0) + parseFloat(this.debtClearedInput.value || 0)) * CONFIG.PRICE_PER_BOTTLE,
+                totalExpenses: (parseFloat(this.pipeCostInput.value || 0) + 
+                              parseFloat(this.shareCostInput.value || 0) + 
+                              parseFloat(this.savingsInput.value || 0) + 
+                              parseFloat(this.otherExpensesInput.value || 0)),
+                remaining: ((parseFloat(this.quantityInput.value || 0) + parseFloat(this.debtClearedInput.value || 0)) * CONFIG.PRICE_PER_BOTTLE) - 
+                          (parseFloat(this.pipeCostInput.value || 0) + 
+                           parseFloat(this.shareCostInput.value || 0) + 
+                           parseFloat(this.savingsInput.value || 0) + 
+                           parseFloat(this.otherExpensesInput.value || 0))
+            };
+        }
+
+        validateForm() {
+            if (!this.dateInput.value) {
+                this.showStatus('กรุณาเลือกวันที่', 'error');
+                return false;
+            }
+            
+            const quantity = parseFloat(this.quantityInput.value) || 0;
+            if (quantity <= 0) {
+                this.showStatus('กรุณากรอกจำนวนขวดที่ขายได้ (ต้องมากกว่า 0)', 'error');
+                return false;
+            }
+            
+            const debtCleared = parseFloat(this.debtClearedInput.value) || 0;
+            const rawWaterDebt = parseFloat(this.rawWaterDebtInput.value) || 0;
+            
+            if (debtCleared > rawWaterDebt) {
+                this.showStatus('จำนวนเคลียยอดค้างน้ำดิบต้องไม่มากกว่าจำนวนค้างน้ำดิบ', 'error');
+                return false;
+            }
+            
+            return true;
+        }
+
+        resetForm() {
+            this.salesForm.reset();
+            this.initializeForm();
+        }
+
+        // ======================
+        // Modal Functions
+        // ======================
+        showPreview() {
+            if (!this.validateForm()) return;
+            
+            this.updateModalPreview();
+            this.openModal(this.previewModal);
+        }
+
+        updateModalPreview() {
+            const formData = this.getFormData();
+            
+            const previewHTML = `
+                <div class="summary-item">
+                    <span><i class="far fa-calendar-alt"></i> วันที่:</span>
+                    <span>${formData.date}</span>
+                </div>
+                <div class="summary-item">
+                    <span><i class="fas fa-bottle-water"></i> จำนวนขวดที่ขายได้:</span>
+                    <span>${formData.quantity} ขวด</span>
+                </div>
+                <div class="summary-item">
+                    <span><i class="fas fa-exclamation-circle"></i> ค้างน้ำดิบ:</span>
+                    <span>${formData.rawWaterDebt} ขวด</span>
+                </div>
+                <div class="summary-item">
+                    <span><i class="fas fa-check-circle"></i> เคลียยอดค้างน้ำดิบ:</span>
+                    <span>${formData.debtCleared} ขวด</span>
+                </div>
+                <div class="summary-item">
+                    <span><i class="fas fa-coins"></i> รวมรายรับ:</span>
+                    <span>${this.formatNumber(formData.totalIncome)} ฿</span>
+                </div>
+                <div class="summary-item">
+                    <span><i class="fas fa-leaf"></i> ค่าท่อม:</span>
+                    <span>${this.formatNumber(formData.pipeCost)} ฿</span>
+                </div>
+                <div class="summary-item">
+                    <span><i class="fas fa-handshake"></i> ค่าแชร์:</span>
+                    <span>${this.formatNumber(formData.shareCost)} ฿</span>
+                </div>
+                <div class="summary-item">
+                    <span><i class="fas fa-piggy-bank"></i> เก็บออม:</span>
+                    <span>${this.formatNumber(formData.savings)} ฿</span>
+                </div>
+                <div class="summary-item">
+                    <span><i class="fas fa-receipt"></i> ค่าใช้จ่ายอื่น:</span>
+                    <span>${this.formatNumber(formData.otherExpenses)} ฿</span>
+                </div>
+                <div class="summary-item summary-total">
+                    <span><i class="fas fa-money-bill-wave"></i> รวมรายจ่าย:</span>
+                    <span>${this.formatNumber(formData.totalExpenses)} ฿</span>
+                </div>
+                <div class="summary-item summary-total">
+                    <span><i class="fas fa-wallet"></i> คงเหลือ:</span>
+                    <span>${this.formatNumber(formData.remaining)} ฿</span>
+                </div>
+            `;
+            
+            this.modalPreviewContent.innerHTML = previewHTML;
+        }
+
+        openModal(modal) {
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        closeModal(modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // ======================
+        // Data Saving Functions
+        // ======================
+        async confirmSave() {
+            this.closeModal(this.previewModal);
+            await this.submitFormData();
+        }
+
+        async submitFormData() {
+            const submitBtn = document.getElementById('confirmSaveBtn');
+            const originalButtonText = submitBtn.innerHTML;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังบันทึก...';
+
+            try {
+                const formData = this.getFormData();
+                
+                const response = await fetch(CONFIG.GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(formData),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    this.showStatus('บันทึกข้อมูลสำเร็จ!', 'success');
+                    this.resetForm();
+                    this.loadHistory();
+                } else {
+                    throw new Error(data.message || 'Unknown error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                this.showStatus('เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' + error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalButtonText;
+            }
+        }
+
+        // ======================
+        // History Functions
+        // ======================
+        async loadHistory() {
+            this.historyTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;"><div class="spinner"></div>กำลังโหลดข้อมูล...</td></tr>';
+            
+            try {
+                const response = await fetch(`${CONFIG.GOOGLE_APPS_SCRIPT_URL}?method=GET`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                if (result.success && result.data && result.data.length > 0) {
+                    this.allHistoryData = result.data;
+                    this.allHistoryData.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    this.currentPage = 1;
+                    this.displayHistoryPage();
+                    this.showStatus('โหลดข้อมูลประวัติสำเร็จ', 'success');
+                } else {
+                    this.allHistoryData = [];
+                    this.historyTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">ไม่พบข้อมูล</td></tr>';
+                    this.showStatus('ไม่พบข้อมูลประวัติการบันทึก', 'info');
+                }
+            } catch (error) {
+                console.error('Error loading history:', error);
+                this.historyTableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--danger-color);">เกิดข้อผิดพลาดในการโหลดประวัติ: ${error.message}</td></tr>`;
+                this.showStatus('เกิดข้อผิดพลาดในการโหลดประวัติ: ' + error.message, 'error');
+            }
+        }
+
+        displayHistoryPage() {
+            this.historyTableBody.innerHTML = '';
+            
+            const startIndex = (this.currentPage - 1) * CONFIG.RECORDS_PER_PAGE;
+            const endIndex = Math.min(startIndex + CONFIG.RECORDS_PER_PAGE, this.allHistoryData.length);
+            
+            if (this.allHistoryData.length === 0) {
+                this.historyTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">ไม่พบข้อมูล</td></tr>';
+                return;
+            }
+            
+            for (let i = startIndex; i < endIndex; i++) {
+                const item = this.allHistoryData[i];
+                const row = document.createElement('tr');
+                row.dataset.id = item.id; 
+                row.innerHTML = `
+                    <td>${item.date}</td>
+                    <td>${item.quantity || 0} ขวด<br><small>เคลียร์ยอด: ${item.debtCleared || 0} ขวด</small></td>
+                    <td>${this.formatNumber(item.totalIncome || 0)} ฿</td>
+                    <td>${this.formatNumber(item.totalExpenses || 0)} ฿</td>
+                    <td>${this.formatNumber(item.remaining || 0)} ฿</td>
+                    <td><span class="badge badge-success"><i class="fas fa-check-circle"></i> บันทึกแล้ว</span></td>
+                    <td>
+                        <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 12px;" onclick="app.showDetail('${item.id}')">
+                            <i class="fas fa-info-circle"></i> รายละเอียด
+                        </button>
+                    </td>
+                `;
+                this.historyTableBody.appendChild(row);
+            }
+            
+            this.setupPagination();
+        }
+
+        setupPagination() {
+            this.pagination.innerHTML = '';
+            
+            const totalPages = Math.ceil(this.allHistoryData.length / CONFIG.RECORDS_PER_PAGE);
+            
+            if (totalPages <= 1) return;
+            
+            // Previous Button
+            const prevLi = document.createElement('li');
+            prevLi.className = 'page-item';
+            prevLi.innerHTML = `<a class="page-link" href="#" id="prevPage"><i class="fas fa-chevron-left"></i></a>`;
+            this.pagination.appendChild(prevLi);
+            
+            // Page Numbers
+            for (let i = 1; i <= totalPages; i++) {
+                const li = document.createElement('li');
+                li.className = 'page-item';
+                li.innerHTML = `<a class="page-link ${i === this.currentPage ? 'active' : ''}" href="#" data-page="${i}">${i}</a>`;
+                this.pagination.appendChild(li);
+            }
+            
+            // Next Button
+            const nextLi = document.createElement('li');
+            nextLi.className = 'page-item';
+            nextLi.innerHTML = `<a class="page-link" href="#" id="nextPage"><i class="fas fa-chevron-right"></i></a>`;
+            this.pagination.appendChild(nextLi);
+            
+            // Event Listeners
+            document.querySelectorAll('.page-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    if (e.currentTarget.id === 'prevPage' && this.currentPage > 1) {
+                        this.currentPage--;
+                    } else if (e.currentTarget.id === 'nextPage' && this.currentPage < totalPages) {
+                        this.currentPage++;
+                    } else if (e.currentTarget.dataset.page) {
+                        this.currentPage = parseInt(e.currentTarget.dataset.page);
+                    }
+                    
+                    this.displayHistoryPage();
+                });
+            });
+        }
+
+        // ======================
+        // Detail View Functions
+        // ======================
+        async showDetail(id) {
+            this.detailModalContent.innerHTML = '<div class="spinner"></div><div style="text-align: center; margin-top: 10px;">กำลังโหลดรายละเอียด...</div>';
+            
+            this.openModal(this.detailModal);
+            
+            const detailData = this.allHistoryData.find(item => item.id === id);
+
+            if (!detailData) {
+                this.detailModalContent.innerHTML = `
+                    <div class="error" style="padding: 15px; border-radius: 8px;">
+                        <i class="fas fa-exclamation-triangle"></i> ไม่พบรายละเอียดสำหรับรายการนี้
+                    </div>
+                `;
+                return;
+            }
+            
+            this.detailModalContent.innerHTML = `
+                <div class="summary-item">
+                    <span><i class="far fa-calendar-alt"></i> วันที่:</span>
+                    <span>${detailData.date || 'N/A'}</span>
+                </div>
+                <div class="summary-item">
+                    <span><i class="fas fa-bottle-water"></i> จำนวนขวดที่ขายได้:</span>
+                    <span>${detailData.quantity || 0} ขวด</span>
+                </div>
+                <div class="summary-item">
+                    <span><i class="fas fa-exclamation-circle"></i> ค้างน้ำดิบ:</span>
+                    <span>${detailData.rawWaterDebt || 0} ขวด</span>
+                </div>
+                <div class="summary-item">
+                    <span><i class="fas fa-check-circle"></i> เคลียยอดค้างน้ำดิบ:</span>
+                    <span>${detailData.debtCleared || 0} ขวด</span>
+                </div>
+                <div class="summary-item">
+                    <span><i class="fas fa-coins"></i> รวมรายรับ:</span>
+                    <span>${this.formatNumber(detailData.totalIncome || 0)} ฿</span>
+                </div>
+                <div class="summary-item">
+                    <span><i class="fas fa-leaf"></i> ค่าท่อม:</span>
+                    <span>${this.formatNumber(detailData.pipeCost || 0)} ฿</span>
+                </div>
+                <div class="summary-item">
+                    <span><i class="fas fa-handshake"></i> ค่าแชร์:</span>
+                    <span>${this.formatNumber(detailData.shareCost || 0)} ฿</span>
+                </div>
+                <div class="summary-item">
+                    <span><i class="fas fa-piggy-bank"></i> เก็บออม:</span>
+                    <span>${this.formatNumber(detailData.savings || 0)} ฿</span>
+                </div>
+                <div class="summary-item">
+                    <span><i class="fas fa-receipt"></i> ค่าใช้จ่ายอื่น:</span>
+                    <span>${this.formatNumber(detailData.otherExpenses || 0)} ฿</span>
+                </div>
+                <div class="summary-item summary-total">
+                    <span><i class="fas fa-money-bill-wave"></i> รวมรายจ่าย:</span>
+                    <span>${this.formatNumber(detailData.totalExpenses || 0)} ฿</span>
+                </div>
+                <div class="summary-item summary-total">
+                    <span><i class="fas fa-wallet"></i> คงเหลือ:</span>
+                    <span>${this.formatNumber(detailData.remaining || 0)} ฿</span>
+                </div>
+            `;
+        }
+
+        // ======================
+        // Data Export Functions
+        // ======================
+        exportData() {
+            if (this.allHistoryData.length === 0) {
+                this.showStatus('ไม่มีข้อมูลที่จะส่งออก', 'warning');
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            
+            // Header
+            csvContent += "วันที่,จำนวนขวดที่ขายได้,ค้างน้ำดิบ,เคลียยอดค้างน้ำดิบ,รายรับ,ค่าท่อม,ค่าแชร์,เก็บออม,ค่าใช้จ่ายอื่น,รวมรายจ่าย,คงเหลือ\n";
+            
+            // Data
+            this.allHistoryData.forEach(item => {
+                const row = [
+                    item.date,
+                    item.quantity || 0,
+                    item.rawWaterDebt || 0,
+                    item.debtCleared || 0,
+                    item.totalIncome || 0,
+                    item.pipeCost || 0,
+                    item.shareCost || 0,
+                    item.savings || 0,
+                    item.otherExpenses || 0,
+                    item.totalExpenses || 0,
+                    item.remaining || 0
+                ].join(",");
+                csvContent += row + "\n";
+            });
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `SSKratomSystem_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            this.showStatus('ส่งออกข้อมูลเรียบร้อยแล้ว', 'success');
+        }
+
+        // ======================
+        // Utility Functions
+        // ======================
+        formatNumber(num) {
+            if (typeof num !== 'number' || isNaN(num)) return '0.00';
+            return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        showStatus(message, type) {
+            this.statusMessage.textContent = message;
+            this.statusMessage.className = type;
+            this.statusMessage.style.display = 'block';
+
+            setTimeout(() => {
+                this.statusMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            tab.classList.add('active');
+            document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+            
+            if (tab.dataset.tab === 'history') {
+                this.loadHistory();
+            }
+        }
+    }
+
+    // Initialize the application when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        window.app = new SSKratomSystem();
+    });
+    </script>
+</body>
+</html>
