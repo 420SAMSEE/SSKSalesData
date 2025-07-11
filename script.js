@@ -1,5 +1,4 @@
-
-    <script>
+   <scripts>
     // Configuration
     const CONFIG = {
         GOOGLE_APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzX3oxXgrDhSU3cRhsk8UJ7-uI-MZ2azRjYiUfBLHKURCFf1cdPeMvsnze-2d4CftQ/exec',
@@ -182,14 +181,6 @@
             const quantity = parseFloat(this.quantityInput.value) || 0;
             if (quantity <= 0) {
                 this.showStatus('กรุณากรอกจำนวนขวดที่ขายได้ (ต้องมากกว่า 0)', 'error');
-                return false;
-            }
-            
-            const debtCleared = parseFloat(this.debtClearedInput.value) || 0;
-            const rawWaterDebt = parseFloat(this.rawWaterDebtInput.value) || 0;
-            
-            if (debtCleared > rawWaterDebt) {
-                this.showStatus('จำนวนเคลียยอดค้างน้ำดิบต้องไม่มากกว่าจำนวนค้างน้ำดิบ', 'error');
                 return false;
             }
             
@@ -584,4 +575,5 @@
     document.addEventListener('DOMContentLoaded', () => {
         window.app = new SSKratomSystem();
     });
-    </script>
+
+    </scripts>

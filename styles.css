@@ -1,4 +1,4 @@
-  <style>
+   <style>
     :root {
         --primary-color: #6c5ce7;
         --secondary-color: #a29bfe;
@@ -97,6 +97,12 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 25px;
+    }
+
+    @media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
     }
 
     .form-group {
@@ -240,6 +246,15 @@
     .btn-group .btn {
         flex: 1;
         min-width: 160px;
+    }
+
+    @media (max-width: 768px) {
+        .btn-group {
+            flex-direction: column;
+        }
+        .btn-group .btn {
+            width: 100%;
+        }
     }
 
     .price-note {
@@ -513,19 +528,6 @@
     }
 
     @media (max-width: 768px) {
-        .form-grid {
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-        
-        .btn-group {
-            flex-direction: column;
-        }
-        
-        .btn-group .btn {
-            width: 100%;
-        }
-        
         .modal-content {
             padding: 25px;
         }
@@ -591,4 +593,172 @@
             white-space: nowrap;
         }
     }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <i class="fas fa-seedling"></i> ระบบบันทึกการขาย SSKratomSystem
+        </h1>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="entry">บันทึกข้อมูล</div>
+            <div class="tab" data-tab="history">ประวัติการบันทึก</div>
+        </div>
+        
+        <div class="tab-content active" id="entry-tab">
+            <div class="card">
+                <form id="salesForm">
+                    <div class="form-grid">
+                        <div class="form-section">
+                            <div class="form-group">
+                                <label for="date"><i class="far fa-calendar-alt"></i> วันที่</label>
+                                <input type="date" id="date" name="date" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="quantity"><i class="fas fa-bottle-water"></i> จำนวนขวดที่ขายได้</label>
+                                <input type="number" id="quantity" name="quantity" required min="0" step="1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="rawWaterDebt"><i class="fas fa-exclamation-circle"></i> ค้างน้ำดิบ (ขวด)</label>
+                                <input type="number" id="rawWaterDebt" name="rawWaterDebt" value="0" min="0" step="1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="debtCleared"><i class="fas fa-check-circle"></i> เคลียยอดค้างน้ำดิบ (ขวด)</label>
+                                <input type="number" id="debtCleared" name="debtCleared" value="0" min="0" step="1">
+                                <div class="price-note">จำนวนขวดที่ชำระยอดค้าง (คิดเป็นรายรับเพิ่มเติม)</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="totalIncome"><i class="fas fa-coins"></i> รวมรายรับ (บาท)</label>
+                                <input type="text" id="totalIncome" name="totalIncome" readonly class="readonly">
+                                <div class="price-note">คำนวณจาก (จำนวนขวดที่ขายได้ + เคลียยอดค้าง) × 40 บาท</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <div class="form-group">
+                                <label for="pipeCost"><i class="fas fa-leaf"></i> ค่าท่อม (บาท)</label>
+                                <input type="number" id="pipeCost" name="pipeCost" value="0" min="0">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="shareCost"><i class="fas fa-handshake"></i> ค่าแชร์ (บาท)</label>
+                                <input type="number" id="shareCost" name="shareCost" value="100" min="0">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="savings"><i class="fas fa-piggy-bank"></i> เก็บออม (บาท)</label>
+                                <input type="number" id="savings" name="savings" value="500" min="0">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="otherExpenses"><i class="fas fa-receipt"></i> ค่าใช้จ่ายอื่น (บาท)</label>
+                                <input type="number" id="otherExpenses" name="otherExpenses" value="0" min="0">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="totalExpenses"><i class="fas fa-money-bill-wave"></i> รวมรายจ่าย (บาท)</label>
+                                <input type="text" id="totalExpenses" name="totalExpenses" readonly class="readonly">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="remaining"><i class="fas fa-wallet"></i> คงเหลือ (บาท)</label>
+                        <input type="text" id="remaining" name="remaining" readonly class="readonly">
+                    </div>
+                    
+                    <div class="summary-section">
+                        <div class="summary-item">
+                            <span>รวมรายรับ:</span>
+                            <span id="summaryIncome">0 ฿</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>รวมรายจ่าย:</span>
+                            <span id="summaryExpenses">600 ฿</span>
+                        </div>
+                        <div class="summary-item summary-total">
+                            <span>คงเหลือ:</span>
+                            <span id="summaryRemaining">0 ฿</span>
+                        </div>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button type="button" id="previewBtn" class="btn btn-secondary">
+                            <i class="fas fa-clipboard-check"></i> ตรวจสอบข้อมูลก่อนบันทึก
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="statusMessage"></div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="history-tab">
+            <div class="card">
+                <h2><i class="fas fa-history"></i> ประวัติการบันทึกข้อมูล</h2>
+                <div class="btn-group">
+                    <button type="button" id="refreshHistory" class="btn btn-primary">
+                        <i class="fas fa-sync-alt"></i> รีเฟรชข้อมูล
+                    </button>
+                    <button type="button" id="exportData" class="btn btn-warning">
+                        <i class="fas fa-file-export"></i> ส่งออกข้อมูล
+                    </button>
+                </div>
+                <div id="historyContent">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>วันที่</th>
+                                <th>จำนวนขวด</th>
+                                <th>รายรับ</th>
+                                <th>รายจ่าย</th>
+                                <th>คงเหลือ</th>
+                                <th>สถานะ</th>
+                                <th>การกระทำ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center;">
+                                    <div class="spinner"></div>
+                                    กำลังโหลดข้อมูล...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="pagination" id="pagination"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-search"></i> ตรวจสอบข้อมูลก่อนบันทึก</h2>
+            <div id="modalPreviewContent" class="card" style="margin-top: 20px;"></div>
+            <div class="btn-group" style="margin-top: 20px;">
+                <button type="button" id="confirmSaveBtn" class="btn btn-success">
+                    <i class="fas fa-check"></i> ยืนยันการบันทึก
+                </button>
+                <button type="button" id="cancelSaveBtn" class="btn btn-danger">
+                    <i class="fas fa-times"></i> ยกเลิก
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-info-circle"></i> รายละเอียดการบันทึก</h2>
+            <div id="detailModalContent" class="card" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
     </style>
