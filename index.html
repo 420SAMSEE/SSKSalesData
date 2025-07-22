@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SSKratom-YMT</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/png" href="icon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>SSKratom-YMT</h1>
+    <nav class="tab-nav">
+      <button class="tab-button active" data-tab="form">บันทึก</button>
+      <button class="tab-button" data-tab="history">ประวัติ</button>
+      <button class="tab-button" data-tab="report">รายงาน</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="form" class="tab-content active">
+      <form id="salesForm">
+        <input type="date" id="date" required />
+        <input type="number" id="quantity" placeholder="จำนวนขวดที่ขายได้" required />
+        <input type="number" id="rawWaterDebt" placeholder="ยอดค้างน้ำดิบ" />
+        <input type="number" id="debtCleared" placeholder="เคลียยอดค้างน้ำดิบ" />
+        <input type="number" id="pipeCost" placeholder="ค่าท่อม" />
+        <input type="number" id="shareCost" placeholder="ค่าแชร์" value="100" />
+        <input type="number" id="savings" placeholder="เก็บออม" value="500" />
+        <input type="number" id="otherExpenses" placeholder="ค่าใช้จ่ายอื่น" />
+        <button type="submit">บันทึกข้อมูล</button>
+      </form>
+      <div id="status"></div>
+    </section>
+
+    <section id="history" class="tab-content">
+      <h2>ประวัติการบันทึก</h2>
+      <table id="historyTable">
+        <thead>
+          <tr>
+            <th>วันที่</th>
+            <th>ขวด</th>
+            <th>รายรับ</th>
+            <th>รายจ่าย</th>
+            <th>คงเหลือ</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="report" class="tab-content">
+      <h2>สรุปรายรับ - รายจ่าย</h2>
+      <canvas id="reportChart" height="250"></canvas>
+    </section>
+  </main>
+
+  <footer><p>© 2025 SSKratom-YMT</p></footer>
+</body>
+</html>
